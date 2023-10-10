@@ -19,6 +19,7 @@ export default function App() {
     uid += window.screen.height || ""
     uid += window.screen.width || ""
     uid += window.screen.pixelDepth || ""
+    uid += window.navigator.hardwareConcurrency || ""
     return uid
   }
 
@@ -40,6 +41,10 @@ export default function App() {
     createData("window.screen.height (6)", window.screen.height),
     createData("window.screen.width (7)", window.screen.width),
     createData("window.screen.pixelDepth (8)", window.screen.pixelDepth),
+    createData(
+      "window.navigator.hardwareConcurrency (9)",
+      window.navigator.hardwareConcurrency
+    ),
   ]
 
   return (
@@ -86,7 +91,7 @@ export default function App() {
           marginTop: "20px",
         }}
       >
-        (2) + (5) + (3) + (6) + (7) + (8)
+        (2) + (5) + (3) + (6) + (7) + (8) + (9)
       </div>
     </>
   )
