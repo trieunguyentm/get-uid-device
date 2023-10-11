@@ -6,10 +6,25 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
+import bscypt from "bcryptjs"
+import { useState } from "react"
+import { useEffect } from "react"
 
 export default function App() {
-  const canvas = document.createElement("canvas")
-  const gl = canvas.getContext("webgl")
+  const [hashedGPU, setHashedGPU] = useState("")
+
+  useEffect(() => {
+    async function hashGPU() {
+      const _vendor = getVendorAndRenderer()._vendor
+      const _renderer = getVendorAndRenderer()._renderer
+      let GPU = ""
+      GPU += _vendor
+      GPU += _renderer
+      const hashedGPU = await bscypt.hash(GPU, 10)
+      setHashedGPU(hashedGPU)
+    }
+    hashGPU()
+  }, [])
 
   function getVendorAndRenderer() {
     var _canvas = document.createElement("canvas")
@@ -17,16 +32,18 @@ export default function App() {
     var _debugInfo
     var _vendor
     var _renderer
+
     try {
       _gl =
         _canvas.getContext("webgl") || _canvas.getContext("experimental-webgl")
     } catch (e) {
+      console.log(e)
       return
     }
     if (_gl) {
-      _debugInfo = gl.getExtension("WEBGL_debug_renderer_info")
-      _vendor = gl.getParameter(_debugInfo.UNMASKED_VENDOR_WEBGL)
-      _renderer = gl.getParameter(_debugInfo.UNMASKED_RENDERER_WEBGL)
+      _debugInfo = _gl.getExtension("WEBGL_debug_renderer_info")
+      _vendor = _gl.getParameter(_debugInfo.UNMASKED_VENDOR_WEBGL)
+      _renderer = _gl.getParameter(_debugInfo.UNMASKED_RENDERER_WEBGL)
       return { _vendor, _renderer }
     }
   }
@@ -43,6 +60,7 @@ export default function App() {
     uid += window.screen.width || ""
     uid += window.screen.pixelDepth || ""
     uid += window.navigator.hardwareConcurrency || ""
+    uid += hashedGPU
     return uid
   }
 
@@ -68,20 +86,12 @@ export default function App() {
       "window.navigator.hardwareConcurrency (9)",
       window.navigator.hardwareConcurrency,
     ),
-    createData("gl.ACTIVE_ATTRIBUTES", gl.ACTIVE_ATTRIBUTES),
-    createData("gl.ACTIVE_TEXTURE", gl.ACTIVE_TEXTURE),
-    createData("gl.ACTIVE_UNIFORMS", gl.ACTIVE_UNIFORMS),
-    createData("gl.ALIASED_LINE_WIDTH_RANGE", gl.ALIASED_LINE_WIDTH_RANGE),
-    createData("gl.ALIASED_POINT_SIZE_RANGE", gl.ALIASED_POINT_SIZE_RANGE),
-    createData("gl.ALPHA", gl.ALPHA),
-    createData("gl.ALPHA_BITS", gl.ALPHA_BITS),
-    createData("gl.ALWAYS", gl.ALWAYS),
-    createData("gl.ARRAY_BUFFER", gl.ARRAY_BUFFER),
-    createData("gl.ARRAY_BUFFER_BINDING", gl.ARRAY_BUFFER_BINDING),
-    createData("gl.ATTACHED_SHADERS", gl.ATTACHED_SHADERS),
-    createData("gl.DEPTH_RANGE", gl.DEPTH_RANGE),
-    createData("Thông tin GPU", getVendorAndRenderer()._vendor),
-    createData("Thông tin GPU", getVendorAndRenderer()._renderer),
+    createData("UNMASKED_VENDOR_WEBGL (10)", getVendorAndRenderer()._vendor),
+    createData(
+      "UNMASKED_RENDERER_WEBGL (11)",
+      getVendorAndRenderer()._renderer,
+    ),
+    createData("HASHED GPU (12)", hashedGPU),
   ]
 
   return (
@@ -128,7 +138,7 @@ export default function App() {
           marginTop: "20px",
         }}
       >
-        (2) + (5) + (3) + (6) + (7) + (8) + (9)
+        (2) + (5) + (3) + (6) + (7) + (8) + (9) + (12)
       </div>
     </>
   )
