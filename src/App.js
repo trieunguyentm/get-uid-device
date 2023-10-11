@@ -10,23 +10,27 @@ import Paper from "@mui/material/Paper"
 export default function App() {
   const canvas = document.createElement("canvas")
   const gl = canvas.getContext("webgl")
-  // var canvas = document.createElement("canvas")
-  // var gl
-  // var debugInfo
-  // var vendor
-  // var renderer
 
-  // try {
-  //   gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
-  // } catch (e) {}
+  function getVendorAndRenderer() {
+    var _canvas = document.createElement("canvas")
+    var _gl
+    var _debugInfo
+    var _vendor
+    var _renderer
+    try {
+      _gl =
+        _canvas.getContext("webgl") || _canvas.getContext("experimental-webgl")
+    } catch (e) {
+      return
+    }
+    if (_gl) {
+      _debugInfo = gl.getExtension("WEBGL_debug_renderer_info")
+      _vendor = gl.getParameter(_debugInfo.UNMASKED_VENDOR_WEBGL)
+      _renderer = gl.getParameter(_debugInfo.UNMASKED_RENDERER_WEBGL)
+      return { _vendor, _renderer }
+    }
+  }
 
-  // if (gl) {
-  //   debugInfo = gl.getExtension("WEBGL_debug_renderer_info")
-  //   vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
-  //   renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
-  //   console.log(vendor)
-  //   console.log(renderer)
-  // }
   function createData(field, value) {
     return { field, value }
   }
@@ -75,6 +79,9 @@ export default function App() {
     createData("gl.ARRAY_BUFFER", gl.ARRAY_BUFFER),
     createData("gl.ARRAY_BUFFER_BINDING", gl.ARRAY_BUFFER_BINDING),
     createData("gl.ATTACHED_SHADERS", gl.ATTACHED_SHADERS),
+    createData("gl.DEPTH_RANGE", gl.DEPTH_RANGE),
+    createData("Thông tin GPU", getVendorAndRenderer()._vendor),
+    createData("Thông tin GPU", getVendorAndRenderer()._renderer),
   ]
 
   return (
