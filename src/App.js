@@ -6,52 +6,64 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
-import bscypt from "bcryptjs"
-import { useState } from "react"
-import { useEffect } from "react"
 
 export default function App() {
-  const [hashedGPU, setHashedGPU] = useState("")
+  /** Remove " " and lower case */
+  function processString(inputString) {
+    const processedString = inputString.replace(/\s+/g, "").toLowerCase()
+    return processedString
+  }
 
-  useEffect(() => {
-    async function hashGPU() {
-      const _vendor = getVendorAndRenderer()._vendor
-      const _renderer = getVendorAndRenderer()._renderer
-      let GPU = ""
-      GPU += _vendor
-      GPU += _renderer
-      const hashedGPU = await bscypt.hash(GPU, 10)
-      setHashedGPU(hashedGPU)
+  /** Convert string to Ascii */
+  function convertStringToAscii(inputString) {
+    let asciiString = ""
+    let number = 0
+
+    for (let i = 0; i < inputString.length; i++) {
+      const charCode = inputString.charCodeAt(i)
+      asciiString += charCode.toString()
+      number += charCode
     }
-    hashGPU()
-  }, [])
 
+    return { asciiString, number }
+  }
+
+  console.log(
+    convertStringToAscii(
+      "googleinc.(intel)angle(intel,intel(r)hdgraphics630direct3d11vs_5_0ps_5_0,d3d11)",
+    ).number,
+  )
+
+  /** Get info gpu */
   function getVendorAndRenderer() {
-    var _canvas = document.createElement("canvas")
-    var _gl
-    var _debugInfo
-    var _vendor
-    var _renderer
+    var canvas = document.createElement("canvas")
+    var gl
+    var debugInfo
+    var vendor
+    var renderer
+    var gpuinfo
 
     try {
-      _gl =
-        _canvas.getContext("webgl") || _canvas.getContext("experimental-webgl")
+      gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
     } catch (e) {
       console.log(e)
       return
     }
-    if (_gl) {
-      _debugInfo = _gl.getExtension("WEBGL_debug_renderer_info")
-      _vendor = _gl.getParameter(_debugInfo.UNMASKED_VENDOR_WEBGL)
-      _renderer = _gl.getParameter(_debugInfo.UNMASKED_RENDERER_WEBGL)
-      return { _vendor, _renderer }
+    if (gl) {
+      debugInfo = gl.getExtension("WEBGL_debug_renderer_info")
+      vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
+      renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+      gpuinfo = vendor + renderer
+      return { gpuinfo, vendor, renderer }
     }
   }
 
+  /** Create row data */
   function createData(field, value) {
     return { field, value }
   }
 
+  /** Get uid device */
   function getUID() {
     let uid = window.navigator.mimeTypes.length
     uid += window.navigator.userAgent.replace(/\D+/g, "")
@@ -60,10 +72,13 @@ export default function App() {
     uid += window.screen.width || ""
     uid += window.screen.pixelDepth || ""
     uid += window.navigator.hardwareConcurrency || ""
-    uid += hashedGPU
+    uid += convertStringToAscii(
+      processString(getVendorAndRenderer().gpuinfo),
+    ).number
     return uid
   }
 
+  /** Create data in table */
   const rows = [
     createData("window.navigator (1)", JSON.stringify(window.navigator)),
     createData(
@@ -86,12 +101,13 @@ export default function App() {
       "window.navigator.hardwareConcurrency (9)",
       window.navigator.hardwareConcurrency,
     ),
-    createData("UNMASKED_VENDOR_WEBGL (10)", getVendorAndRenderer()._vendor),
+    createData("UNMASKED_VENDOR_WEBGL (10)", getVendorAndRenderer().vendor),
+    createData("UNMASKED_RENDERER_WEBGL (11)", getVendorAndRenderer().renderer),
     createData(
-      "UNMASKED_RENDERER_WEBGL (11)",
-      getVendorAndRenderer()._renderer,
+      "Processed GPU (12)",
+      convertStringToAscii(processString(getVendorAndRenderer().gpuinfo))
+        .number,
     ),
-    createData("HASHED GPU (12)", hashedGPU),
   ]
 
   return (
