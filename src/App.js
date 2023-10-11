@@ -28,12 +28,6 @@ export default function App() {
     return { asciiString, number }
   }
 
-  console.log(
-    convertStringToAscii(
-      "googleinc.(intel)angle(intel,intel(r)hdgraphics630direct3d11vs_5_0ps_5_0,d3d11)",
-    ).number,
-  )
-
   /** Get info gpu */
   function getVendorAndRenderer() {
     var canvas = document.createElement("canvas")
