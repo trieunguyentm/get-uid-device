@@ -102,6 +102,8 @@ export default function App() {
       convertStringToAscii(processString(getVendorAndRenderer().gpuinfo))
         .number,
     ),
+    createData("totalJSHeapSize", performance.memory.totalJSHeapSize),
+    createData("jsHeapSizeLimit", performance.memory.jsHeapSizeLimit),
   ]
 
   return (
