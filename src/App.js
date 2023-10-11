@@ -8,6 +8,25 @@ import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
 
 export default function App() {
+  const canvas = document.createElement("canvas")
+  const gl = canvas.getContext("webgl")
+  // var canvas = document.createElement("canvas")
+  // var gl
+  // var debugInfo
+  // var vendor
+  // var renderer
+
+  // try {
+  //   gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
+  // } catch (e) {}
+
+  // if (gl) {
+  //   debugInfo = gl.getExtension("WEBGL_debug_renderer_info")
+  //   vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
+  //   renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+  //   console.log(vendor)
+  //   console.log(renderer)
+  // }
   function createData(field, value) {
     return { field, value }
   }
@@ -43,8 +62,19 @@ export default function App() {
     createData("window.screen.pixelDepth (8)", window.screen.pixelDepth),
     createData(
       "window.navigator.hardwareConcurrency (9)",
-      window.navigator.hardwareConcurrency
+      window.navigator.hardwareConcurrency,
     ),
+    createData("gl.ACTIVE_ATTRIBUTES", gl.ACTIVE_ATTRIBUTES),
+    createData("gl.ACTIVE_TEXTURE", gl.ACTIVE_TEXTURE),
+    createData("gl.ACTIVE_UNIFORMS", gl.ACTIVE_UNIFORMS),
+    createData("gl.ALIASED_LINE_WIDTH_RANGE", gl.ALIASED_LINE_WIDTH_RANGE),
+    createData("gl.ALIASED_POINT_SIZE_RANGE", gl.ALIASED_POINT_SIZE_RANGE),
+    createData("gl.ALPHA", gl.ALPHA),
+    createData("gl.ALPHA_BITS", gl.ALPHA_BITS),
+    createData("gl.ALWAYS", gl.ALWAYS),
+    createData("gl.ARRAY_BUFFER", gl.ARRAY_BUFFER),
+    createData("gl.ARRAY_BUFFER_BINDING", gl.ARRAY_BUFFER_BINDING),
+    createData("gl.ATTACHED_SHADERS", gl.ATTACHED_SHADERS),
   ]
 
   return (
